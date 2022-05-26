@@ -68,6 +68,16 @@ async function contentScriptFunc(name) {
     "흥분",
     "희생된",
   ];
+  async function notify(text) {
+    const notiDiv = document.createElement("div");
+    notiDiv.style = `position: fixed; right: 1px; top: 10px; width: 100px; height: 40px; z-index: 9999; background-color: green; border-radius: 5px; text-align: center; padding: 10px; font-size: 14px; font-height: 20px; font-weight: bold;`;
+    notiDiv.textContent = `${text} copied!`;
+    document.body.appendChild(notiDiv);
+    notiDiv.id = `${Math.random().toString(36).substr(2, 11)}`;
+    setTimeout(() => {
+      document.body.removeChild(notiDiv);
+    }, 1000);
+  }
   var text = "";
   if (window.getSelection) {
     text = window.getSelection().toString();
@@ -102,26 +112,34 @@ async function contentScriptFunc(name) {
     .then((res) => {
       emotion = `${text} -> ${convert[res["result"]]}`;
       var dialog = document.createElement("dialog");
-      dialog.id = "emogenius";
+      dialog.id = "emogenius_ha4219";
+      const emojiContent = document.createElement("div");
+      emojiContent.innerText = "😙";
+      emojiContent.style = "cursor: pointer";
+      emojiContent.addEventListener("click", function (e) {
+        const tempArea = document.createElement("input");
+        tempArea.value = emojiContent.innerText;
+        console.log(tempArea.value);
+        tempArea.select();
+        document.execCommand("copy");
+        notify(emojiContent.innerText);
+      });
       dialog.style = `
         
       `;
       dialog.textContent = emotion;
       var button = document.createElement("button");
       button.textContent = "Close";
+      dialog.appendChild(emojiContent);
       dialog.appendChild(button);
       dialog.addEventListener("click", function (e) {
         if (e.target === dialog) {
           dialog.close();
         }
       });
-      // document.addEventListener("click", (e) => {
-      //   console.log(e.target.id);
-      //   if (e.target.id !== "emogenius") {
-      //     dialog.close();
-      //   }
-      //   return;
-      // });
+      button.addEventListener("click", function (e) {
+        dialog.close();
+      });
       document.body.appendChild(dialog);
       dialog.showModal();
     });
