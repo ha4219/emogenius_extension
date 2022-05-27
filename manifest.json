@@ -5,12 +5,12 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["activeTab", "scripting", "https://donglog.today/"],
+  "permissions": ["activeTab", "scripting"],
   "action": {},
   "commands": {
     "_execute_action": {
       "suggested_key": {
-        "default": "Ctrl+Shift+E",
+        "default": "Ctrl+Shift+U",
         "mac": "Command+U"
       }
     }

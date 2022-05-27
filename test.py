@@ -3,7 +3,6 @@
 #     '감사하는': 1,
 #     '걱정스러운': 2,
 #     '고립된': 3,
-#     '외로운': 37,
 #     '괴로워하는': 4,
 #     '구역질 나는': 5,
 #     '기쁨': 6,
@@ -37,6 +36,7 @@
 #     '억울한': 34,
 #     '열등감': 35,
 #     '염세적인': 36,
+#     '외로운': 37,
 #     '우울한': 38,
 #     '자신하는': 39,
 #     '조심스러운': 40,
@@ -46,7 +46,7 @@
 #     '짜증내는': 44,
 #     '초조한': 45,
 #     '충격 받은': 46,
-#     '취약한': 47,
+#     '취약한': 47,     
 #     '툴툴대는': 48,
 #     '편안한': 49,
 #     '한심한': 50,
@@ -56,7 +56,7 @@
 #     '회의적인': 54,
 #     '후회되는': 55,
 #     '흥분': 56,
-#     '희생된': 57
+#     '희생된': 57, 
 # }
 
 # res = {}
@@ -68,10 +68,111 @@
 # print(res)
 # print(ret)
 
+import requests
+from bs4 import BeautifulSoup
+import time
+import tqdm
+
 d = [
     'poor',
     'grateful',
     'worrisome'
+    'isolated',
+    'distressed',
+    'nauseating',
+    'Joy',
+    'dejected',
+    'self-conscious',
+    'angry',
+    'tearful',
+    'easygoing',
+    'baffling',
+    'Panic',
+'scared',
+'paralyzed',
+'satisfactory',
+'defensive',
+'betrayed',
+'abandoned',
+'Shameful',
+'Anger',
+'Anxiety',
+'sorrowful',
+'Wound',
+'annoying',
+'stressed-out',
+'Sadness',
+'trustworthy',
+'excited',
+'Disappointed',
+'malicious',
+'fretting',
+'relief',
+'unfair',
+'complex',
+'pessimistic',
+'Lonely',
+'Gloomy',
+'confident',
+'cautious',
+'frustrated',
+'guilty',
+'Jealous',
+'annoying',
+'Nervous',
+'shocked',
+'weak',
+'grumbling',
+'Comfortable',
+'pathetic',
+'repulsive',
+'confused',
+'disillusioned',
+'skeptical',
+'regrettable',
+'Excitement',
+'victimized',
 ]
-print(ord)
-# https://emojidb.org/
+
+ret = []
+
+LIMIT = 50
+
+base =  'https://emojidb.org/'
+
+pbar = tqdm.tqdm(d)
+for word in pbar:
+    url = f'{base}{word.lower()}-emojis'
+
+    res = requests.get(url)
+    html = res.text
+    soup = BeautifulSoup(html, 'html.parser')
+    emojis = soup.find_all("div", "emoji")
+    tmp = [emoji.text for emoji in emojis[:LIMIT]]
+    ret.append(tmp)
+    time.sleep(3)
+
+with open('emojis.txt', 'w', encoding='UTF-8') as f:
+    for line in ret:
+        f.write('[')
+        # f.writelines(line)
+        for word in line:
+            f.write(f'"{word}",')
+        f.write('],\n')
+
+
+# url = f'{base}{d[2].lower()}-emojis'
+
+# url = 'https://emojidb.org/worrisome-emojis'
+
+# res = requests.get(url)
+# html = res.text
+# soup = BeautifulSoup(html, 'html.parser')
+# emojis = soup.find_all("div", "emoji")
+# tmp = [emoji.text for emoji in emojis[:LIMIT]]
+
+# with open('tmp.txt', 'w', encoding='UTF-8') as f:
+#     f.write('[')
+#     for word in tmp:
+#         f.write(f'"{word}",')
+#     f.write('],\n')
